@@ -475,6 +475,22 @@ export const APPLIANCES: ApplianceSpec[] = [
 
 export const ACTIVE_APPLIANCES = APPLIANCES.filter((a) => a.active);
 
+/**
+ * The few appliances 90% of users actually own — shown as big tap cards by
+ * default so the first screen is instantly understandable (§10 simplicity).
+ */
+export const POPULAR_APPLIANCE_IDS = [
+  "ceiling-fan",
+  "led-bulb",
+  "led-tv",
+  "refrigerator",
+  "wifi-router",
+  "cctv-camera",
+  "water-pump-1hp",
+  "ac-1-ton",
+  "laptop",
+] as const;
+
 export function getAppliance(id: string): ApplianceSpec | undefined {
   return APPLIANCES.find((a) => a.id === id);
 }

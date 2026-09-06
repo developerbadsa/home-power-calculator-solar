@@ -1,6 +1,7 @@
 "use client";
 
-import { Minus, Plus, X } from "lucide-react";
+import { useState } from "react";
+import { Minus, Plus, X, Pencil, Check } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { formatNumber, formatWatts } from "@/lib/formatting";
 import { ASSUMPTIONS } from "@/domain/config/assumptions";
@@ -17,28 +18,20 @@ interface Props {
 
 export function ApplianceRow({ item, name, invalid, onChange, onRemove, unusual }: Props) {
   const { t } = useI18n();
+  const [editing, setEditing] = useState(false);
 
-  const isTypical = item.typicalWatts != null && item.watts === item.typicalWatts;
+  const summary = t("row.summary", {
+    watts: formatWatts(item.watts),
+    hours: formatNumber(item.hoursPerDay, 1),
+  });
   const inputClass = invalid
     ? "field-input border-rose-500 focus:border-rose-500 focus:ring-rose-500"
     : "field-input";
 
   return (
     <li className="card space-y-3">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="text-sm font-medium text-slate-900">{name}</p>
-          {item.surgeCategory ? (
-            <p className="mt-0.5 text-xs text-amber-700">{t("warn.surgeRow")}</p>
-          ) : null}
-          {unusual ? (
-            <p className="mt-0.5 text-xs text-amber-700">
-              {t(unusual === "high" ? "warn.unusualHigh" : "warn.unusualLow", {
-                value: formatNumber(item.watts),
-              })}
-            </p>
-          ) : null}
-        </div>
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-base font-medium text-slate-900">{name}</p>
         <button
           type="button"
           onClick={() => onRemove(item.uid)}
@@ -49,79 +42,78 @@ export function ApplianceRow({ item, name, invalid, onChange, onRemove, unusual 
         </button>
       </div>
 
-      <div className="grid grid-cols-[auto_1fr_1fr] items-end gap-3">
-        {/* Quantity stepper */}
-        <div className="flex flex-col items-center gap-1">
-          <span className="field-label">{t("row.quantity")}</span>
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              className="stepper-btn"
-              aria-label="−"
-              disabled={item.quantity <= 1}
-              onClick={() =>
-                onChange(item.uid, {
-                  quantity: Math.max(1, item.quantity - 1),
-                })
-              }
-            >
-              <Minus className="h-4 w-4" strokeWidth={1.75} />
-            </button>
-            <span
-              className="w-9 text-center text-base font-semibold"
-              aria-live="polite"
-            >
-              {item.quantity}
-            </span>
-            <button
-              type="button"
-              className="stepper-btn"
-              aria-label="+"
-              disabled={item.quantity >= ASSUMPTIONS.maxQuantity}
-              onClick={() =>
-                onChange(item.uid, {
-                  quantity: Math.min(ASSUMPTIONS.maxQuantity, item.quantity + 1),
-                })
-              }
-            >
-              <Plus className="h-4 w-4" strokeWidth={1.75} />
-            </button>
-          </div>
+      <div className="flex items-center justify-between gap-3">
+        {/* Quantity stepper — the primary interaction (§37) */}
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            className="stepper-btn"
+            aria-label="−"
+            disabled={item.quantity <= 1}
+            onClick={() => onChange(item.uid, { quantity: Math.max(1, item.quantity - 1) })}
+          >
+            <Minus className="h-4 w-4" strokeWidth={1.75} />
+          </button>
+          <span className="w-10 text-center text-xl font-semibold" aria-live="polite">
+            {item.quantity}
+          </span>
+          <button
+            type="button"
+            className="stepper-btn"
+            aria-label="+"
+            disabled={item.quantity >= ASSUMPTIONS.maxQuantity}
+            onClick={() =>
+              onChange(item.uid, {
+                quantity: Math.min(ASSUMPTIONS.maxQuantity, item.quantity + 1),
+              })
+            }
+          >
+            <Plus className="h-4 w-4" strokeWidth={1.75} />
+          </button>
         </div>
 
-        {/* Watts */}
-        <label className="flex flex-col gap-1">
-          <span className="field-label">
-            {t("row.wattsLabel")}{" "}
-            <span className="font-normal text-slate-400">
-              {isTypical && item.typicalWatts
-                ? `(${t("row.wattsTypical", { watts: formatWatts(item.typicalWatts) })})`
-                : ""}
-            </span>
-          </span>
-          <div className="relative">
+        {/* Caption + edit */}
+        <div className="flex flex-col items-end gap-0.5">
+          <span className="text-sm text-slate-600">{summary}</span>
+          <button
+            type="button"
+            onClick={() => setEditing((e) => !e)}
+            className="flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-900"
+          >
+            <Pencil className="h-3.5 w-3.5" strokeWidth={1.75} />
+            {editing ? t("row.done") : t("row.edit")}
+          </button>
+        </div>
+      </div>
+
+      {item.surgeCategory ? (
+        <p className="text-xs text-amber-700">{t("warn.surgeRow")}</p>
+      ) : null}
+      {unusual ? (
+        <p className="text-xs text-amber-700">
+          {t(unusual === "high" ? "warn.unusualHigh" : "warn.unusualLow", {
+            value: formatNumber(item.watts),
+          })}
+        </p>
+      ) : null}
+
+      {editing ? (
+        <div className="grid grid-cols-2 gap-3 rounded-[4px] border border-slate-200 bg-slate-50 p-3">
+          <label className="flex flex-col gap-1">
+            <span className="field-label">{t("row.wattsLabel")} (W)</span>
             <input
               type="number"
               inputMode="decimal"
               min={1}
               max={ASSUMPTIONS.maxWatts}
               value={item.watts}
-              onChange={(e) =>
-                onChange(item.uid, { watts: Number(e.target.value) || 0 })
-              }
-              className={`${inputClass} pr-8`}
+              onChange={(e) => onChange(item.uid, { watts: Number(e.target.value) || 0 })}
+              className={inputClass}
               aria-label={t("row.wattsLabel")}
             />
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-400">
-              W
-            </span>
-          </div>
-        </label>
-
-        {/* Hours */}
-        <label className="flex flex-col gap-1">
-          <span className="field-label">{t("row.hoursLabel")}</span>
-          <div className="relative">
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="field-label">{t("row.hoursLabel")}</span>
             <input
               type="number"
               inputMode="decimal"
@@ -129,18 +121,21 @@ export function ApplianceRow({ item, name, invalid, onChange, onRemove, unusual 
               max={24}
               step={0.5}
               value={item.hoursPerDay}
-              onChange={(e) =>
-                onChange(item.uid, { hoursPerDay: Number(e.target.value) || 0 })
-              }
-              className={`${inputClass} pr-8`}
+              onChange={(e) => onChange(item.uid, { hoursPerDay: Number(e.target.value) || 0 })}
+              className={inputClass}
               aria-label={t("row.hoursLabel")}
             />
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-400">
-              h
-            </span>
-          </div>
-        </label>
-      </div>
+          </label>
+          <button
+            type="button"
+            onClick={() => setEditing(false)}
+            className="btn-secondary col-span-2"
+          >
+            <Check className="h-4 w-4" strokeWidth={1.75} />
+            {t("row.done")}
+          </button>
+        </div>
+      ) : null}
     </li>
   );
 }

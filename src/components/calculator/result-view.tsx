@@ -93,71 +93,47 @@ export function ResultView({
   };
 
   return (
-    <div className="space-y-5">
-      {/* ── Recommendation cards (§55: recommendation is visually dominant) */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div className="recommendation-card">
-          <span className="mx-auto flex h-9 w-9 items-center justify-center rounded-[4px] bg-slate-100 text-slate-700">
-            <BatteryCharging className="h-5 w-5" strokeWidth={1.75} />
-          </span>
-          <span className="recommendation-value">{battery.label}</span>
-          <span className="recommendation-label">{t("result.battery")}</span>
-          <span className="text-xs text-slate-400">{battery.configuration}</span>
-          <span className="text-xs text-slate-500">
-            {t("result.actualBackup", {
-              hours: formatNumber(battery.estimatedBackupHours, 1),
-            })}
-          </span>
+    <div className="space-y-4">
+      {/* ── One dominant recommendation card (5-second read) ────────────── */}
+      <div className="rounded-[4px] border border-slate-900 bg-slate-900 p-5 text-white">
+        <div className="grid grid-cols-3 gap-2">
+          <BigValue icon={BatteryCharging} value={battery.label} sub={battery.configuration} />
+          <BigValue icon={Plug} value={inverter.label} />
+          <BigValue icon={Sun} value={formatWatts(solar.recommendedWatts)} />
         </div>
-        <div className="recommendation-card">
-          <span className="mx-auto flex h-9 w-9 items-center justify-center rounded-[4px] bg-slate-100 text-slate-700">
-            <Plug className="h-5 w-5" strokeWidth={1.75} />
-          </span>
-          <span className="recommendation-value">{inverter.label}</span>
-          <span className="recommendation-label">{t("result.inverter")}</span>
-          {inverter.surgeAdvised ? (
-            <span className="text-xs font-medium text-amber-700">
-              {t("result.inverter.surge")} ↑
-            </span>
-          ) : null}
-        </div>
-        <div className="recommendation-card">
-          <span className="mx-auto flex h-9 w-9 items-center justify-center rounded-[4px] bg-slate-100 text-slate-700">
-            <Sun className="h-5 w-5" strokeWidth={1.75} />
-          </span>
-          <span className="recommendation-value">{formatWatts(solar.recommendedWatts)}</span>
-          <span className="recommendation-label">{t("result.solar")}</span>
-          {solar.combos.length > 0 ? (
-            <span className="text-xs text-slate-400">
-              {t("result.solar.combos")}:{" "}
-              {solar.combos.map((c) => `${c.panels} × ${c.panelWatts}W`).join(" · ")}
-            </span>
-          ) : null}
+        <div className="mt-4 border-t border-slate-700 pt-3 text-center text-sm text-slate-200">
+          {formatWatts(result.totalLoadW)} · {formatHours(result.input.backupHours)}{" "}
+          · {formatEnergy(result.dailyEnergyWh)}
         </div>
       </div>
 
-      {/* Load / energy summary */}
-      <div className="grid grid-cols-3 gap-2">
-        <div className="card py-3 text-center">
-          <p className="text-2xl font-bold">{formatWatts(result.totalLoadW)}</p>
-          <p className="text-xs text-slate-500">{t("result.load")}</p>
-        </div>
-        <div className="card py-3 text-center">
-          <p className="text-2xl font-bold">{formatEnergy(result.dailyEnergyWh)}</p>
-          <p className="text-xs text-slate-500">{t("result.energy")}</p>
-        </div>
-        <div className="card py-3 text-center">
-          <p className="text-2xl font-bold">{formatHours(result.input.backupHours)}</p>
-          <p className="text-xs text-slate-500">{t("result.backup")}</p>
-        </div>
+      {/* ── Share right at the moment of value (§67) ────────────────────── */}
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <button
+          type="button"
+          onClick={shareWhatsApp}
+          className="btn h-11 flex-1 bg-[#25D366] px-4 text-white hover:bg-[#1fb857]"
+        >
+          <WhatsAppIcon /> {t("result.share.whatsapp")}
+        </button>
+        <button
+          type="button"
+          onClick={copyLink}
+          className="btn-secondary flex-1"
+        >
+          {copied ? (
+            <>
+              <Check className="h-4 w-4" strokeWidth={1.75} /> {t("result.share.copied")}
+            </>
+          ) : (
+            <>
+              <Link className="h-4 w-4" strokeWidth={1.75} /> {t("result.share.copy")}
+            </>
+          )}
+        </button>
       </div>
 
-      {/* Plain-language explanation (§15) — info tone (blue, §5.2) */}
-      <div className="rounded-[4px] border border-blue-200 bg-blue-50 p-4">
-        <p className="text-sm leading-relaxed text-blue-800">{explanation}</p>
-      </div>
-
-      {/* Warnings (§21, §40) */}
+      {/* Warnings (§21, §40) — visible, not hidden */}
       {result.warnings.length > 0 ? (
         <div className="space-y-2">
           {result.warnings.map((w) => (
@@ -166,7 +142,12 @@ export function ResultView({
         </div>
       ) : null}
 
-      {/* Backup level (§25) */}
+      {/* Why this result (§15) */}
+      <div className="rounded-[4px] border border-blue-200 bg-blue-50 p-4">
+        <p className="text-sm leading-relaxed text-blue-800">{explanation}</p>
+      </div>
+
+      {/* Backup level (§25) — compact */}
       <div>
         <p className="field-label mb-2">{t("result.tier.label")}</p>
         <div className="grid grid-cols-3 gap-2">
@@ -191,7 +172,7 @@ export function ResultView({
         </div>
       </div>
 
-      {/* Edit (§55) */}
+      {/* Edit */}
       <div className="flex flex-wrap gap-2">
         <button type="button" onClick={onEditAppliances} className="btn-secondary">
           <Pencil className="h-4 w-4" strokeWidth={1.75} />
@@ -202,36 +183,7 @@ export function ResultView({
         </button>
       </div>
 
-      {/* Share (§67 — shareability at the moment of value) */}
-      <div className="card space-y-2.5">
-        <p className="text-sm font-medium text-slate-900">{t("result.share.title")}</p>
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <button
-            type="button"
-            onClick={shareWhatsApp}
-            className="btn h-11 flex-1 bg-[#25D366] px-4 text-white hover:bg-[#1fb857]"
-          >
-            <WhatsAppIcon /> {t("result.share.whatsapp")}
-          </button>
-          <button
-            type="button"
-            onClick={copyLink}
-            className="btn-secondary flex-1"
-          >
-            {copied ? (
-              <>
-                <Check className="h-4 w-4" strokeWidth={1.75} /> {t("result.share.copied")}
-              </>
-            ) : (
-              <>
-                <Link className="h-4 w-4" strokeWidth={1.75} /> {t("result.share.copy")}
-              </>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* How we calculated (§16 — collapsed by default) */}
+      {/* How we calculated (§16 — collapsed) */}
       <details className="card group">
         <summary className="flex cursor-pointer items-center text-sm font-medium text-slate-900">
           <ChevronRight className="h-4 w-4 transition-transform group-open:rotate-90" strokeWidth={1.75} />
@@ -291,6 +243,26 @@ export function ResultView({
       <p className="text-xs leading-relaxed text-slate-400">
         {t("result.estimates")} {t("warning.note")}
       </p>
+    </div>
+  );
+}
+
+function BigValue({
+  icon: Icon,
+  value,
+  sub,
+}: {
+  icon: typeof Plug;
+  value: string;
+  sub?: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-1 text-center">
+      <span className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-slate-700/70 text-slate-100">
+        <Icon className="h-5 w-5" strokeWidth={1.75} />
+      </span>
+      <span className="text-xl font-bold leading-tight">{value}</span>
+      {sub ? <span className="text-xs text-slate-300">{sub}</span> : null}
     </div>
   );
 }

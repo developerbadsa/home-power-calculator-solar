@@ -21,7 +21,7 @@ export function Hero() {
         <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-500 sm:text-base">
           {t("hero.subtitle")}
         </p>
-        <div className="mt-8 flex flex-col items-center gap-3">
+        <div className="mt-8">
           <button
             type="button"
             onClick={scrollToCalculator}
@@ -30,18 +30,6 @@ export function Hero() {
             <Zap className="h-4 w-4" strokeWidth={2} />
             {t("hero.cta")}
           </button>
-          <div className="flex flex-wrap justify-center gap-2">
-            {(["home", "battery", "ips", "solar"] as const).map((q) => (
-              <button
-                key={q}
-                type="button"
-                onClick={scrollToCalculator}
-                className="chip chip-idle"
-              >
-                {t(`hero.quick.${q}`)}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
     </section>

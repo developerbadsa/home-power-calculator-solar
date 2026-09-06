@@ -11,6 +11,7 @@ import type { BackupTier, CalculationSettings } from "@/domain/calculations/type
 import type { SurgeCategory as EngineSurgeCategory } from "@/domain/config/assumptions";
 import { encodeShareState, decodeShareState } from "@/lib/share";
 import { validateAppliance } from "@/lib/validation";
+import { formatWatts, formatEnergy } from "@/lib/formatting";
 import { AppliancePicker } from "./appliance-picker";
 import { ApplianceRow } from "./appliance-row";
 import { BackupStep } from "./backup-step";
@@ -172,6 +173,17 @@ export function CalculatorWizard() {
   }, [displayItems, backupHours, tier, settings]);
 
   const result = useMemo(() => calculate(engineInput), [engineInput]);
+
+  // Live summary (§ competitor's instant-feedback bar, simplified): totals
+  // update the moment an appliance is added/removed/edited.
+  const liveSummary = useMemo(() => {
+    const load = items.reduce((s, it) => s + it.watts * it.quantity, 0);
+    const energy = items.reduce(
+      (s, it) => s + it.watts * it.quantity * it.hoursPerDay,
+      0,
+    );
+    return { load, energy };
+  }, [items]);
 
   const rowIssues = useMemo(() => {
     const map = new Map<string, ReturnType<typeof validateAppliance>>();
@@ -382,6 +394,33 @@ export function CalculatorWizard() {
                 {t("row.err.blocking")}
               </p>
             ) : null}
+          </div>
+
+          {/* Live summary bar — instant feedback while picking (§4.6-style) */}
+          <div
+            aria-live="polite"
+            className="flex items-stretch gap-4 rounded-[4px] border border-slate-200 bg-slate-100 px-4 py-3"
+          >
+            <div className="min-w-0">
+              <p className="text-xs font-medium text-slate-500">
+                {t("summary.totalLoad")}
+              </p>
+              <p className="text-2xl font-bold text-slate-900">
+                {formatWatts(liveSummary.load)}
+              </p>
+            </div>
+            <div className="w-px bg-slate-200" aria-hidden="true" />
+            <div className="min-w-0">
+              <p className="text-xs font-medium text-slate-500">
+                {t("summary.dailyEnergy")}
+              </p>
+              <p className="text-2xl font-bold text-slate-900">
+                {formatEnergy(liveSummary.energy)}
+              </p>
+            </div>
+            <div className="ml-auto hidden items-end pb-0.5 sm:flex">
+              <p className="text-xs text-slate-400">{t("summary.live")}</p>
+            </div>
           </div>
         </section>
       ) : null}

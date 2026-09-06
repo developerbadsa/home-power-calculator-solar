@@ -12,7 +12,7 @@ export const en = {
 
   "hero.title": "Find the right IPS, battery and solar size for your home",
   "hero.subtitle":
-    "Add your appliances, choose your backup time, and get a recommendation in minutes. No electrical knowledge needed.",
+    "Add what you use, pick a backup time, get the right size — in minutes. No electrical knowledge needed.",
   "hero.cta": "Start Calculation",
   "hero.quick.home": "Calculate Home Load",
   "hero.quick.battery": "Find Battery Size",
@@ -60,6 +60,9 @@ export const en = {
   "step.appliances.emptyTitle": "No appliances yet",
   "step.appliances.none": "Add a few appliances above — or use a template to get started faster.",
   "step.appliances.custom": "Add custom appliance",
+  "picker.popular": "Popular",
+  "picker.seeAll": "See all appliances ({count})",
+  "picker.seeLess": "Show less",
   "search.emptyTitle": "No results found",
   "custom.name": "Appliance name",
   "custom.namePlaceholder": "e.g. My Fan",
@@ -80,6 +83,9 @@ export const en = {
   "row.err.watts": "Enter a wattage between 1 and {max}.",
   "row.err.hours": "Hours must be between 0 and 24.",
   "row.err.blocking": "Fix the highlighted values to continue.",
+  "row.summary": "{watts} · {hours}h per day",
+  "row.edit": "Edit",
+  "row.done": "Done",
   "warn.unusualHigh": "This wattage looks unusually high ({value}W) — please check it.",
   "warn.unusualLow": "This wattage looks unusually low ({value}W) — please check it.",
   "warn.surgeRow": "Starts with extra power — see the note in your result.",
@@ -165,6 +171,30 @@ export const en = {
   "warning.direction.low": "unusually low",
   "warning.note":
     "Final installation should be checked against the actual appliance ratings and equipment specifications by a qualified professional.",
+
+  // ── Live summary ──────────────────────────────────────────────────────
+  "summary.totalLoad": "Total load",
+  "summary.dailyEnergy": "Daily energy",
+  "summary.live": "Updates as you add appliances",
+
+  // ── Footer / calculator links ─────────────────────────────────────────
+  "footer.calculators": "Calculators",
+  "footer.calc.battery": "Battery Backup Calculator",
+  "footer.calc.inverter": "Inverter / IPS Size Calculator",
+  "footer.calc.solar": "Solar Calculator Bangladesh",
+  "footer.calc.wattToAmp": "Watts to Amps",
+  "footer.calc.ampToWatt": "Amps to Watts",
+  "footer.calc.vaToWatt": "VA to Watts",
+  "footer.guides": "Guides",
+  "footer.guide.battery": "How much battery do I need?",
+  "footer.guide.1000va": "What can a 1000VA IPS run?",
+
+  // ── Homepage guides section ───────────────────────────────────────────
+  "guides.title": "Guides",
+  "guides.g1": "How much battery do I need?",
+  "guides.g1.desc": "Load-to-battery size table plus a backup-time calculator.",
+  "guides.g2": "What can a 1000VA IPS run?",
+  "guides.g2.desc": "Appliance combinations that fit an 800W IPS, surge included.",
 } as const;
 
 export type MessageKey = keyof typeof en;

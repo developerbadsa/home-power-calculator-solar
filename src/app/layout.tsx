@@ -3,6 +3,7 @@ import { Inter, Noto_Sans_Bengali } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { I18nProvider } from "@/lib/i18n";
+import { siteUrl } from "@/lib/site";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -16,6 +17,7 @@ const notoBengali = Noto_Sans_Bengali({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl()),
   title: "Home Power Calculator — IPS, Battery & Solar Sizing",
   description:
     "Find the right IPS, battery and solar size for your home. Add your appliances, choose your backup time, and get a recommendation in minutes. No electrical knowledge needed.",
