@@ -98,11 +98,13 @@ The UI follows the project's design standard: 4px border radius, slate-900 prima
 
 ## Roadmap
 
-Phase 1 (shipped): core calculator, appliance catalog, EN/BN, mobile-first UI, shareable results + WhatsApp, PWA offline, engine tests.
+Live status, shipped checklist and the prioritized future backlog (with the SEO instruction manual for every new page) live in **[`PROJECT_TRACKER.md`](./PROJECT_TRACKER.md)**.
 
-Phase 2 (next): dedicated SEO calculator pages + guides, richer templates, budget/balanced/heavy refinement, analytics events (§52–53).
+Quick summary:
 
-Phase 3: accounts, saved homes, PDF reports, product/affiliate layer, installer leads (§29–30, §47–49).
+- **Phase 1 (shipped):** core calculator, ~37-appliance catalog, EN/BN, mobile-first UI, shareable results + WhatsApp, PWA offline, engine tests.
+- **Phase 2 (partly shipped):** SEO calculator cluster — watt/amp/VA converters, battery, inverter, solar pages, and two high-intent Bangla guides; `sitemap.xml` + `robots.txt` + structured data. Remaining: `/calculators/ips`, `/calculators/ups`, `/calculators/home-load`, more long-tail guides, `/bn/` + hreflang, per-page OG images, analytics (§52–53).
+- **Phase 3:** accounts, saved homes, PDF reports, product/affiliate layer, installer leads (§29–30, §47–49).
 
 ## Safety note
 
