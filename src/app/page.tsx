@@ -17,7 +17,7 @@ export default function Home() {
         <section
           id="calculator"
           aria-label="Calculator"
-          className="mx-auto max-w-3xl scroll-mt-20 px-4 py-8"
+          className="mx-auto max-w-3xl scroll-mt-20 px-4 py-8 bg-white/70 backdrop-blur-sm rounded-lg"
         >
           <CalculatorWizard />
         </section>

@@ -16,7 +16,7 @@ html.lang-bn {
 }
 
 body {
-  @apply bg-slate-50 text-slate-900;
+  @apply bg-slate-50/80 text-slate-900;
 }
 
 @layer base {

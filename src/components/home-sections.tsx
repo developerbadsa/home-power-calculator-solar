@@ -14,7 +14,7 @@ export function HowItWorks() {
   return (
     <section
       aria-labelledby="how-title"
-      className="border-t border-slate-200 bg-white py-10"
+      className="border-t border-slate-200 bg-white/70 backdrop-blur-sm py-10"
     >
       <div className="mx-auto max-w-3xl px-4">
         <h2 id="how-title" className="text-center text-xl font-semibold text-slate-900">
@@ -56,7 +56,7 @@ export function Guides() {
   return (
     <section
       aria-labelledby="guides-title"
-      className="border-t border-slate-200 bg-white py-10"
+      className="border-t border-slate-200 bg-white/70 backdrop-blur-sm py-10"
     >
       <div className="mx-auto max-w-3xl px-4">
         <h2 id="guides-title" className="text-center text-xl font-semibold text-slate-900">
@@ -82,7 +82,7 @@ export function Guides() {
 export function Faq() {
   const { t } = useI18n();
   return (
-    <section aria-labelledby="faq-title" className="mx-auto max-w-3xl px-4 py-10">
+    <section aria-labelledby="faq-title" className="mx-auto max-w-3xl px-4 py-10 bg-white/70 backdrop-blur-sm rounded-lg">
       <h2 id="faq-title" className="text-center text-xl font-semibold text-slate-900">
         {t("faq.title")}
       </h2>
