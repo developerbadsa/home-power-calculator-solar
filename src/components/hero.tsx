@@ -13,7 +13,7 @@ export function Hero() {
   };
 
   return (
-    <section className="relative overflow-hidden border-b border-slate-200 bg-gradient-to-b from-slate-900 to-slate-800">
+    <section className="relative overflow-hidden border-b border-slate-200 bg-gradient-to-b from-slate-900/90 to-slate-800/80 backdrop-blur-sm">
       <div className="mx-auto max-w-3xl px-4 pb-12 pt-14 text-center sm:pt-20">
         {/* Big, bold hero — instant clarity on what this tool does */}
         <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm text-slate-300">

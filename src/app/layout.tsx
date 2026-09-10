@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import "./globals.css";
 import { I18nProvider } from "@/lib/i18n";
 import { Preloader } from "@/components/preloader";
+import { ConstellationBg } from "@/components/constellation-bg";
 import { siteUrl } from "@/lib/site";
 
 const inter = Inter({
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <I18nProvider>
           <Preloader />
+          <ConstellationBg />
           {children}
           <Toaster position="bottom-right" toastOptions={{ style: { borderRadius: "4px" } }} richColors />
         </I18nProvider>
