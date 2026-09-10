@@ -52,6 +52,21 @@ body {
 }
 
 @layer components {
+  /* Step transitions — smooth fade + slide */
+  .step-enter {
+    animation: stepIn 0.2s ease-out;
+  }
+  @keyframes stepIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   /* Buttons — text-sm font-medium, 4px radius, slate-950 primary (§3, §5). */
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-[4px] text-sm font-medium transition-colors;

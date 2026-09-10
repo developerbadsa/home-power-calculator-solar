@@ -11,6 +11,7 @@ const LINKS = [
   { href: "/calculators/watt-to-amp", label: "Watts to Amps Calculator" },
   { href: "/calculators/amp-to-watt", label: "Amps to Watts Calculator" },
   { href: "/calculators/va-to-watt", label: "VA to Watts Calculator" },
+  { href: "/calculators/bill-analysis", label: "Electricity Bill Calculator" },
 ] as const;
 
 export function RelatedCalculators({ current }: { current?: string }) {

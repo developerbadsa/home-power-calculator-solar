@@ -312,8 +312,37 @@ export function CalculatorWizard() {
         </li>
       </ol>
 
+      {/* Sticky live summary — always visible while scrolling */}
+      {items.length > 0 && step === "appliances" ? (
+        <div
+          aria-live="polite"
+          className="sticky top-0 z-20 -mx-4 flex items-stretch gap-4 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur"
+        >
+          <div className="min-w-0">
+            <p className="text-xs font-medium text-slate-400">
+              {t("summary.totalLoad")}
+            </p>
+            <p className="text-2xl font-extrabold tracking-tight text-slate-900">
+              {formatWatts(liveSummary.load)}
+            </p>
+          </div>
+          <div className="w-px bg-slate-200" aria-hidden="true" />
+          <div className="min-w-0">
+            <p className="text-xs font-medium text-slate-400">
+              {t("summary.dailyEnergy")}
+            </p>
+            <p className="text-2xl font-extrabold tracking-tight text-slate-900">
+              {formatEnergy(liveSummary.energy)}
+            </p>
+          </div>
+          <div className="ml-auto hidden items-end pb-1 sm:flex">
+            <p className="text-xs text-slate-400">{t("summary.live")}</p>
+          </div>
+        </div>
+      ) : null}
+
       {step === "appliances" ? (
-        <section aria-labelledby="appliances-title" className="space-y-5">
+        <section aria-labelledby="appliances-title" className="step-enter space-y-5">
           <div>
             <h2 id="appliances-title" className="text-2xl font-semibold text-slate-900">
               {t("step.appliances.title")}
@@ -407,38 +436,11 @@ export function CalculatorWizard() {
               </p>
             ) : null}
           </div>
-
-          {/* Live summary bar — instant feedback while picking (§4.6-style) */}
-          <div
-            aria-live="polite"
-            className="flex items-stretch gap-4 rounded-[4px] border border-slate-200 bg-slate-100 px-4 py-3"
-          >
-            <div className="min-w-0">
-              <p className="text-xs font-medium text-slate-500">
-                {t("summary.totalLoad")}
-              </p>
-              <p className="text-2xl font-bold text-slate-900">
-                {formatWatts(liveSummary.load)}
-              </p>
-            </div>
-            <div className="w-px bg-slate-200" aria-hidden="true" />
-            <div className="min-w-0">
-              <p className="text-xs font-medium text-slate-500">
-                {t("summary.dailyEnergy")}
-              </p>
-              <p className="text-2xl font-bold text-slate-900">
-                {formatEnergy(liveSummary.energy)}
-              </p>
-            </div>
-            <div className="ml-auto hidden items-end pb-0.5 sm:flex">
-              <p className="text-xs text-slate-400">{t("summary.live")}</p>
-            </div>
-          </div>
         </section>
       ) : null}
 
       {step === "backup" ? (
-        <section aria-labelledby="backup-title" className="space-y-5">
+        <section aria-labelledby="backup-title" className="step-enter space-y-5">
           <div>
             <h2 id="backup-title" className="text-2xl font-semibold text-slate-900">
               {t("step.backup.title")}
@@ -450,7 +452,7 @@ export function CalculatorWizard() {
       ) : null}
 
       {step === "result" ? (
-        <section aria-labelledby="result-title" className="space-y-4">
+        <section aria-labelledby="result-title" className="step-enter space-y-4">
           <div>
             <h2 id="result-title" className="text-2xl font-semibold text-slate-900">
               {t("result.title")}

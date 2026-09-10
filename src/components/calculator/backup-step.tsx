@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X } from "lucide-react";
+import { X, Clock, Zap, Battery, BatteryFull } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { formatHours } from "@/lib/formatting";
 
@@ -10,13 +10,18 @@ interface Props {
   onChange: (hours: number) => void;
 }
 
-const PRESETS = [1, 2, 4, 6];
+const PRESETS = [
+  { hours: 1, icon: Clock, label: "1h", desc: { en: "Quick backup", bn: "দ্রুত ব্যাকআপ" } },
+  { hours: 2, icon: Zap, label: "2h", desc: { en: "Most popular", bn: "সবচেয়ে জনপ্রিয়" } },
+  { hours: 4, icon: Battery, label: "4h", desc: { en: "Extended backup", bn: "বর্ধিত ব্যাকআপ" } },
+  { hours: 6, icon: BatteryFull, label: "6h", desc: { en: "Full evening", bn: "পুরো সন্ধ্যা" } },
+];
 
 export function BackupStep({ value, onChange }: Props) {
-  const { t } = useI18n();
+  const { lang, t } = useI18n();
   const [customOpen, setCustomOpen] = useState(false);
   const [customValue, setCustomValue] = useState(
-    PRESETS.includes(value) ? "" : String(value),
+    PRESETS.some(p => p.hours === value) ? "" : String(value),
   );
 
   const valid = Number.isFinite(value) && value >= 0.5 && value <= 24;
@@ -30,24 +35,37 @@ export function BackupStep({ value, onChange }: Props) {
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <p className="text-sm text-slate-500">{t("backup.hint")}</p>
+      
+      {/* Preset buttons with descriptions */}
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {PRESETS.map((h) => (
-          <button
-            key={h}
-            type="button"
-            onClick={() => onChange(h)}
-            aria-pressed={value === h && !customOpen}
-            className={`flex h-16 items-center justify-center rounded-[4px] text-lg font-semibold transition-colors active:scale-[0.98] ${
-              value === h && !customOpen ? "bg-slate-900 text-white" : "border border-slate-200 bg-white text-slate-900 hover:border-slate-900"
-            }`}
-          >
-            {formatHours(h)}
-          </button>
-        ))}
+        {PRESETS.map((preset) => {
+          const Icon = preset.icon;
+          const isActive = value === preset.hours && !customOpen;
+          return (
+            <button
+              key={preset.hours}
+              type="button"
+              onClick={() => onChange(preset.hours)}
+              aria-pressed={isActive}
+              className={`flex flex-col items-center justify-center gap-1 rounded-[4px] p-3 transition-all active:scale-[0.98] ${
+                isActive
+                  ? "bg-slate-900 text-white shadow-lg"
+                  : "border border-slate-200 bg-white text-slate-900 hover:border-slate-900 hover:bg-slate-50"
+              }`}
+            >
+              <Icon className={`h-5 w-5 ${isActive ? "text-slate-300" : "text-slate-400"}`} strokeWidth={2} />
+              <span className="text-lg font-bold">{preset.label}</span>
+              <span className={`text-xs ${isActive ? "text-slate-300" : "text-slate-500"}`}>
+                {lang === "bn" ? preset.desc.bn : preset.desc.en}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
+      {/* Custom hours input */}
       <div className="rounded-[4px] border border-dashed border-slate-300 bg-slate-50 p-3">
         {!customOpen ? (
           <button

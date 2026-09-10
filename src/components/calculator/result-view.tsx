@@ -9,6 +9,7 @@ import {
   Link,
   Check,
   ChevronRight,
+  Banknote,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
@@ -18,6 +19,7 @@ import type {
   CalculationResult,
   CalculationSettings,
 } from "@/domain/calculations/types";
+import { estimateCost, formatBDT } from "@/domain/calculations/cost";
 import { WarningCard } from "./warning-card";
 import { AdvancedSettings } from "./advanced-settings";
 
@@ -132,6 +134,45 @@ export function ResultView({
           )}
         </button>
       </div>
+
+      {/* ── Cost estimation — what this will likely cost in BD market ── */}
+      {(() => {
+        const cost = estimateCost({
+          batteryAh: battery.capacityAh,
+          batteryVoltage: result.usedSettings.systemVoltage ?? 12,
+          inverterVA: inverter.recommendedVA,
+          solarWatts: solar.recommendedWatts,
+        });
+        return (
+          <div className="rounded-[4px] border border-amber-200 bg-amber-50 p-4">
+            <div className="mb-2 flex items-center gap-2">
+              <Banknote className="h-4 w-4 text-amber-700" strokeWidth={2} />
+              <p className="text-sm font-semibold text-amber-900">{t("cost.title")}</p>
+            </div>
+            <div className="space-y-1.5 text-sm">
+              <div className="flex justify-between text-amber-800">
+                <span>{t("cost.battery")}</span>
+                <span className="font-medium">{formatBDT(cost.battery)}</span>
+              </div>
+              <div className="flex justify-between text-amber-800">
+                <span>{t("cost.inverter")}</span>
+                <span className="font-medium">{formatBDT(cost.inverter)}</span>
+              </div>
+              <div className="flex justify-between text-amber-800">
+                <span>{t("cost.solar")}</span>
+                <span className="font-medium">{formatBDT(cost.solar)}</span>
+              </div>
+              <div className="border-t border-amber-200 pt-1.5">
+                <div className="flex justify-between font-bold text-amber-900">
+                  <span>{t("cost.total")}</span>
+                  <span>{formatBDT(cost.total)}</span>
+                </div>
+              </div>
+            </div>
+            <p className="mt-2 text-xs text-amber-600">{t("cost.note")}</p>
+          </div>
+        );
+      })()}
 
       {/* Warnings (§21, §40) — visible, not hidden */}
       {result.warnings.length > 0 ? (

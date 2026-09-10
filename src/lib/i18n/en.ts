@@ -46,6 +46,41 @@ export const en = {
   "faq.a4":
     "Yes — this tool is designed for mobile first, and it works offline once you've opened it once.",
 
+  // ── Bill Analysis ────────────────────────────────────────────────────
+  "bill.enterKwh": "Enter your electricity bill units (kWh) from each month:",
+  "bill.addMonth": "Add another month",
+  "bill.kwhHint": "You can find the kWh (units) on your monthly electricity bill. More months = more accurate.",
+  "bill.avgMonthly": "Avg. monthly",
+  "bill.avgDaily": "Avg. daily",
+  "bill.avgLoad": "Avg. load",
+  "bill.backupHint": "How long should this backup run?",
+  "bill.youNeed": "For your average usage, you need approximately:",
+  "bill.basedOn": "Based on {kwh} kWh/month average ({load} average load).",
+  "bill.savings": "Solar can offset most of your bill",
+  "bill.savingsDesc": "A {solar} solar panel system can generate about {kwh} kWh/month on a typical sunny day — potentially covering most of your monthly usage.",
+  "bill.howCalc": "How we calculated this",
+  "bill.step1": "1. We average your monthly kWh from the bills you entered.",
+  "bill.step2": "2. We divide by 30 days to get daily consumption.",
+  "bill.step3": "3. We convert daily kWh to average watts (kWh × 1000 ÷ 24).",
+  "bill.step4": "4. We size the battery, IPS and solar panels based on this average load and your chosen backup time.",
+  "bill.emptyTitle": "No bill data yet",
+  "bill.emptyHint": "Enter the kWh (units) from your electricity bills above to see your average load and get a recommendation.",
+
+  // ── Cost estimation ───────────────────────────────────────────────────
+  "cost.title": "Estimated market price",
+  "cost.battery": "Battery",
+  "cost.inverter": "IPS / Inverter",
+  "cost.solar": "Solar panels",
+  "cost.total": "Total estimated",
+  "cost.range": "{min} – {max}",
+  "cost.note": "Approximate 2025 Bangladesh market prices. Actual prices vary by brand and retailer.",
+
+  // ── Enhanced hero ─────────────────────────────────────────────────────
+  "hero.trust.1": "No electricity knowledge needed",
+  "hero.trust.2": "Works on your phone",
+  "hero.trust.3": "Free forever — no account",
+  "hero.stats.appliances": "{count}+ appliances",
+
   "footer.trust":
     "Estimates depend on appliance usage, battery condition, inverter efficiency, temperature, wiring losses and other real-world conditions. Final installations should be checked against actual appliance ratings and equipment specifications by a qualified professional.",
   "footer.rights": "A free tool. No account needed.",
@@ -203,6 +238,7 @@ export const en = {
   "footer.calc.wattToAmp": "Watts to Amps",
   "footer.calc.ampToWatt": "Amps to Watts",
   "footer.calc.vaToWatt": "VA to Watts",
+  "footer.calc.billAnalysis": "Electricity Bill Calculator",
   "footer.guides": "Guides",
   "footer.guide.battery": "How much battery do I need?",
   "footer.guide.1000va": "What can a 1000VA IPS run?",

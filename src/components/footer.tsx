@@ -10,6 +10,7 @@ const CALC_LINKS = [
   { href: "/calculators/watt-to-amp", key: "footer.calc.wattToAmp" },
   { href: "/calculators/amp-to-watt", key: "footer.calc.ampToWatt" },
   { href: "/calculators/va-to-watt", key: "footer.calc.vaToWatt" },
+  { href: "/calculators/bill-analysis", key: "footer.calc.billAnalysis" },
 ] as const;
 
 const GUIDE_LINKS = [
