@@ -59,6 +59,7 @@ export const en = {
   "step.appliances.selected": "Your appliances",
   "step.appliances.emptyTitle": "No appliances yet",
   "step.appliances.none": "Add a few appliances above — or use a template to get started faster.",
+  "step.appliances.addMore": "Add more appliances",
   "step.appliances.custom": "Add custom appliance",
   "picker.popular": "Popular",
   "picker.seeAll": "See all appliances ({count})",

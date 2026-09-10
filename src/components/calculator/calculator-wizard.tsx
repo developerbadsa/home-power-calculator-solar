@@ -363,31 +363,43 @@ export function CalculatorWizard() {
                 </p>
               </div>
             ) : (
-              <ul className="space-y-2.5">
-                {displayItems.map(({ item, name }) => {
-                  const issues = rowIssues.get(item.uid) ?? [];
-                  const unusualIssue = issues.find((i) =>
-                    i.code.startsWith("watts-unusual"),
-                  );
-                  return (
-                    <ApplianceRow
-                      key={item.uid}
-                      item={item}
-                      name={name}
-                      invalid={issues.some((i) => i.blocking)}
-                      unusual={
-                        unusualIssue?.code === "watts-unusual-high"
-                          ? "high"
-                          : unusualIssue?.code === "watts-unusual-low"
-                            ? "low"
-                            : null
-                      }
-                      onChange={updateItem}
-                      onRemove={removeItem}
-                    />
-                  );
-                })}
-              </ul>
+              <>
+                <ul className="space-y-2.5">
+                  {displayItems.map(({ item, name }) => {
+                    const issues = rowIssues.get(item.uid) ?? [];
+                    const unusualIssue = issues.find((i) =>
+                      i.code.startsWith("watts-unusual"),
+                    );
+                    return (
+                      <ApplianceRow
+                        key={item.uid}
+                        item={item}
+                        name={name}
+                        invalid={issues.some((i) => i.blocking)}
+                        unusual={
+                          unusualIssue?.code === "watts-unusual-high"
+                            ? "high"
+                            : unusualIssue?.code === "watts-unusual-low"
+                              ? "low"
+                              : null
+                        }
+                        onChange={updateItem}
+                        onRemove={removeItem}
+                      />
+                    );
+                  })}
+                </ul>
+                {/* "Add more" button — fixes the scroll-up UX pain point */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    document.getElementById("popular-appliances")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                  className="btn-ghost w-full border border-dashed border-slate-300"
+                >
+                  + {t("step.appliances.addMore")}
+                </button>
+              </>
             )}
             {hasBlockingIssues ? (
               <p className="text-xs text-rose-600" role="alert">

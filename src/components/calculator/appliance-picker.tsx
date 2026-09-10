@@ -139,7 +139,7 @@ export function AppliancePicker({ onAdd }: Props) {
   };
 
   return (
-    <div className="space-y-4">
+    <div id="popular-appliances" className="space-y-4">
       {/* ── Popular: big tap cards (the 5-second path) ─────────────────── */}
       <div>
         <p className="field-label mb-2">{t("picker.popular")}</p>

@@ -59,6 +59,7 @@ export const bn: Dict = {
   "step.appliances.selected": "আপনার যন্ত্রপাতি",
   "step.appliances.emptyTitle": "এখনো কোনো যন্ত্রপাতি নেই",
   "step.appliances.none": "উপরে কয়েকটা যন্ত্রপাতি যোগ করুন — বা দ্রুত শুরু করতে টেমপ্লেট ব্যবহার করুন।",
+  "step.appliances.addMore": "আরও যন্ত্রপাতি যোগ করুন",
   "step.appliances.custom": "নতুন যন্ত্রপাতি যোগ করুন",
   "picker.popular": "জনপ্রিয়",
   "picker.seeAll": "সব যন্ত্রপাতি দেখুন ({count})",
