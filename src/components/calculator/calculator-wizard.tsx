@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Check, ListChecks } from "lucide-react";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
@@ -174,6 +174,20 @@ export function CalculatorWizard() {
 
   const result = useMemo(() => calculate(engineInput), [engineInput]);
 
+  // Auto-scroll to selected items when a new appliance is added
+  const prevCountRef = useRef(items.length);
+  useEffect(() => {
+    const prevCount = prevCountRef.current;
+    if (items.length > prevCount && step === "appliances") {
+      const timer = setTimeout(() => {
+        document.getElementById("selected-items")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 50);
+      prevCountRef.current = items.length;
+      return () => clearTimeout(timer);
+    }
+    prevCountRef.current = items.length;
+  }, [items.length, step]);
+
   // Live summary (§ competitor's instant-feedback bar, simplified): totals
   // update the moment an appliance is added/removed/edited.
   const liveSummary = useMemo(() => {
@@ -261,6 +275,10 @@ export function CalculatorWizard() {
     );
     setStep("appliances");
     toast.success(t("template.applied"));
+    // Scroll to selected items so user sees what was added
+    setTimeout(() => {
+      document.getElementById("selected-items")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
   };
 
   const stepIndex = (s: Step) => STEPS.indexOf(s);
@@ -370,7 +388,7 @@ export function CalculatorWizard() {
 
           <AppliancePicker onAdd={addItem} />
 
-          <div className="space-y-2.5">
+          <div id="selected-items" className="space-y-2.5">
             <h3 className="text-base font-medium text-slate-900">
               {t("step.appliances.selected")}{" "}
               {items.length > 0 ? (
