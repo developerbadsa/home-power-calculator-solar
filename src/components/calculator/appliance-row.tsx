@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Minus, Plus, X, Pencil, Check } from "lucide-react";
+import { Minus, Plus, X, Pencil, Check, Cpu } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { formatNumber, formatWatts } from "@/lib/formatting";
 import { ASSUMPTIONS } from "@/domain/config/assumptions";
 import type { WizardItem } from "./calculator-wizard";
+import { PcPowerEstimator } from "./pc-power-estimator";
 
 interface Props {
   item: WizardItem;
@@ -19,6 +20,8 @@ interface Props {
 export function ApplianceRow({ item, name, invalid, onChange, onRemove, unusual }: Props) {
   const { t } = useI18n();
   const [editing, setEditing] = useState(false);
+  const [showPcEstimator, setShowPcEstimator] = useState(false);
+  const isDesktop = item.applianceId === "desktop-computer";
 
   const summary = t("row.summary", {
     watts: formatWatts(item.watts),
@@ -95,6 +98,30 @@ export function ApplianceRow({ item, name, invalid, onChange, onRemove, unusual 
             value: formatNumber(item.watts),
           })}
         </p>
+      ) : null}
+
+      {/* Desktop PC estimator toggle */}
+      {isDesktop && !editing ? (
+        <div className="space-y-2">
+          {!showPcEstimator ? (
+            <button
+              type="button"
+              onClick={() => setShowPcEstimator(true)}
+              className="flex w-full items-center gap-2 rounded-[4px] border border-dashed border-amber-300 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-700 hover:border-amber-400"
+            >
+              <Cpu className="h-4 w-4" />
+              {t("row.pcEstimator")}
+            </button>
+          ) : (
+            <PcPowerEstimator
+              onSelect={(watts) => {
+                onChange(item.uid, { watts });
+                setShowPcEstimator(false);
+              }}
+              onSkip={() => setShowPcEstimator(false)}
+            />
+          )}
+        </div>
       ) : null}
 
       {editing ? (

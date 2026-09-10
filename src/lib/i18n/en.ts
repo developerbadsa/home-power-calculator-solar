@@ -1,4 +1,4 @@
-/**
+/** 
  * English dictionary.
  *
  * This file is the single source of truth for the dictionary shape: `bn.ts`
@@ -87,9 +87,20 @@ export const en = {
   "row.summary": "{watts} · {hours}h per day",
   "row.edit": "Edit",
   "row.done": "Done",
+  "row.pcEstimator": "Estimate my PC's actual power use",
   "warn.unusualHigh": "This wattage looks unusually high ({value}W) — please check it.",
   "warn.unusualLow": "This wattage looks unusually low ({value}W) — please check it.",
   "warn.surgeRow": "Starts with extra power — see the note in your result.",
+
+  // ── PC Power Estimator ────────────────────────────────────────────────
+  "pcEstimator.title": "PC Power Estimator",
+  "pcEstimator.subtitle": "Tell us about your PC to get a more accurate wattage estimate.",
+  "pcEstimator.cpu": "Processor (CPU)",
+  "pcEstimator.gpu": "Graphics Card (GPU)",
+  "pcEstimator.psuOptional": "Power Supply (PSU) — optional",
+  "pcEstimator.estimated": "Estimated power use",
+  "pcEstimator.skip": "Skip — use default",
+  "pcEstimator.apply": "Use this estimate",
 
   "step.backup.title": "How long should these run without electricity?",
   "step.backup.subtitle": "Pick a backup time, or choose custom.",

@@ -90,6 +90,17 @@ export const bn: Dict = {
   "warn.unusualHigh": "এই পাওয়ারটা অস্বাভাবিক বেশি ({value}W) — দেখে নিন।",
   "warn.unusualLow": "এই পাওয়ারটা অস্বাভাবিক কম ({value}W) — দেখে নিন।",
   "warn.surgeRow": "চালুর সময় অতিরিক্ত পাওয়ার লাগে — ফলাফলে নোট দেখুন।",
+  "row.pcEstimator": "আমার PC-র আসল পাওয়ার বের করুন",
+
+  // ── PC Power Estimator ────────────────────────────────────────────────
+  "pcEstimator.title": "PC পাওয়ার এস্টিমেটর",
+  "pcEstimator.subtitle": "আপনার PC-র সম্পর্কে জানান যাতে সঠিক ওয়াট অনুমান পাওয়া যায়।",
+  "pcEstimator.cpu": "প্রসেসর (CPU)",
+  "pcEstimator.gpu": "গ্রাফিক্স কার্ড (GPU)",
+  "pcEstimator.psuOptional": "পাওয়ার সাপ্লাই (PSU) — ঐচ্ছিক",
+  "pcEstimator.estimated": "আনুমানিক পাওয়ার খরচ",
+  "pcEstimator.skip": "এড়িয়ে যান — ডিফল্ট ব্যবহার করুন",
+  "pcEstimator.apply": "এই অনুমান ব্যবহার করুন",
 
   "step.backup.title": "বিদ্যুৎ চলে গেলে কত ঘণ্টা এই জিনিসগুলো চলুক?",
   "step.backup.subtitle": "ব্যাকআপ সময় বেছে নিন, বা নিজে লিখুন।",
