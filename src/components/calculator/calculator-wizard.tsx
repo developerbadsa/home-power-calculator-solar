@@ -331,10 +331,10 @@ export function CalculatorWizard() {
       </ol>
 
       {/* Sticky live summary — always visible while scrolling */}
-      {items.length > 0 && step === "appliances" ? (
+      {items.length > 0 && step !== "result" ? (
         <div
           aria-live="polite"
-          className="sticky top-0 z-20 -mx-4 flex items-stretch gap-4 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur"
+          className="sticky top-[52px] z-30 -mx-4 flex items-stretch gap-4 border-b border-slate-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur-md"
         >
           <div className="min-w-0">
             <p className="text-xs font-medium text-slate-400">
