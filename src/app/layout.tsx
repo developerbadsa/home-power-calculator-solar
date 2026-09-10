@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import "./globals.css";
 import { I18nProvider } from "@/lib/i18n";
 import { Preloader } from "@/components/preloader";
+import { MatrixBg } from "@/components/matrix-bg";
 
 import { siteUrl } from "@/lib/site";
 
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <I18nProvider>
           <Preloader />
+          <MatrixBg />
           {children}
           <Toaster position="bottom-right" toastOptions={{ style: { borderRadius: "4px" } }} richColors />
         </I18nProvider>
