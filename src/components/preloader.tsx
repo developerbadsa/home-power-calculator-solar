@@ -1,163 +1,288 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
- * Preloader — animated solar → battery → IPS sequence.
- * Three-phase animation:
- *   Phase 1 (0–1s): Sun rays appear + solar panel icon rises
- *   Phase 2 (1–2s): Energy flows to battery icon which charges up
- *   Phase 3 (2–3s): Battery powers the Zap/IPS icon, whole thing glows
- *   Phase 4 (3–3.8s): Everything fades out revealing the app.
+ * Premium Preloader — pure SVG + CSS, no external images.
+ *
+ * Flow: Sun rays rotate → energy dot travels to battery → battery fills →
+ * home icon powers on → smooth fade out.
+ *
+ * Total duration: ~3.8s visible, then 600ms fade.
  */
 export function Preloader() {
-  const [phase, setPhase] = useState(0);
+  const [phase, setPhase] = useState<0 | 1 | 2 | 3>(0); // 0=sun 1=travel 2=battery 3=home
+  const [progress, setProgress] = useState(0);
   const [fading, setFading] = useState(false);
   const [gone, setGone] = useState(false);
+  const rafRef = useRef<number>(0);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 600);  // solar appears
-    const t2 = setTimeout(() => setPhase(2), 1400); // battery charges
-    const t3 = setTimeout(() => setPhase(3), 2200); // IPS powers on
-    const t4 = setTimeout(() => setFading(true), 3000);
-    const t5 = setTimeout(() => setGone(true), 3600);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5); };
+    // Phase timeline — generous so users see each stage
+    const timers = [
+      setTimeout(() => setPhase(1), 700),   // energy starts traveling
+      setTimeout(() => setPhase(2), 1600),  // battery charging
+      setTimeout(() => setPhase(3), 2600),  // home powers on
+      setTimeout(() => setFading(true), 3800),
+      setTimeout(() => setGone(true), 4400),
+    ];
+
+    // Progress bar: smooth cubic ease 0→100 over 3800ms
+    let start: number | null = null;
+    const duration = 3800;
+    const tick = (now: number) => {
+      if (!start) start = now;
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setProgress(Math.round(eased * 100));
+      if (p < 1) rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      timers.forEach(clearTimeout);
+      cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   if (gone) return null;
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-slate-900 transition-opacity duration-600 ${
-        fading ? "opacity-0" : "opacity-100"
+      aria-label="Loading"
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0a0f1a] transition-all duration-600 select-none ${
+        fading ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
+      style={{ transitionDuration: "600ms" }}
     >
-      {/* Animated scene — solar → battery → IPS */}
-      <div className="relative flex items-center gap-6 sm:gap-10">
-        {/* ── Sun ──────────────────────────────────────── */}
-        <div className={`transition-all duration-700 ${phase >= 1 ? "opacity-100 scale-100" : "opacity-0 scale-50"}`}>
-          <div className="relative">
+      {/* Subtle radial glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(56,189,248,0.06),transparent_70%)]" />
+
+      {/* Main SVG scene */}
+      <div className="relative z-10 w-full max-w-md px-6">
+        <svg
+          viewBox="0 0 400 140"
+          className="w-full h-auto"
+          aria-hidden="true"
+        >
+          <defs>
+            {/* Sun glow */}
+            <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="#fbbf24" stopOpacity="0" />
+            </radialGradient>
+
+            {/* Battery fill gradient */}
+            <linearGradient id="battFill" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stopColor="#10b981" />
+              <stop offset="100%" stopColor="#34d399" />
+            </linearGradient>
+
+            {/* Energy dot glow */}
+            <filter id="dotGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+            </filter>
+
+            {/* Path for energy travel */}
+            <path
+              id="energyPath"
+              d="M 80 70 C 140 70, 160 70, 200 70"
+              fill="none"
+            />
+          </defs>
+
+          {/* ── SOLAR PANEL ── */}
+          <g className={phase >= 0 ? "preloader-fade-in" : "preloader-hidden"}>
+            {/* Sun glow circle */}
+            <circle
+              cx="50"
+              cy="30"
+              r="28"
+              fill="url(#sunGlow)"
+              className={phase >= 0 ? "preloader-pulse-slow" : ""}
+            />
             {/* Sun rays */}
-            <div className="absolute inset-0 -m-6 sun-rays" />
-            {/* Sun body */}
-            <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-amber-400 shadow-lg shadow-amber-400/40">
-              <SunSVG />
-            </div>
-          </div>
-        </div>
+            {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
+              <line
+                key={angle}
+                x1="50"
+                y1="30"
+                x2={50 + 22 * Math.cos((angle * Math.PI) / 180)}
+                y2={30 + 22 * Math.sin((angle * Math.PI) / 180)}
+                stroke="#fbbf24"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                opacity="0.6"
+                className="preloader-sun-ray"
+                style={{ animationDelay: `${angle * 5}ms` }}
+              />
+            ))}
+            {/* Sun core */}
+            <circle cx="50" cy="30" r="10" fill="#fbbf24" className="preloader-pulse-slow" />
+            <circle cx="50" cy="30" r="6" fill="#fde68a" />
 
-        {/* ── Energy flow line 1 (solar → battery) ─────── */}
-        <div className={`absolute left-[62px] top-1/2 h-0.5 bg-gradient-to-r from-amber-400 to-transparent transition-all duration-500 sm:left-[76px] ${
-          phase >= 1 ? "w-8 sm:w-12 opacity-100" : "w-0 opacity-0"
-        }`}>
-          <div className="energy-particle-1 h-full w-2 bg-amber-300 shadow-sm shadow-amber-300/60" />
-        </div>
+            {/* Panel body */}
+            <rect x="20" y="68" width="60" height="42" rx="3" fill="#1e293b" stroke="#334155" strokeWidth="1" />
+            {/* Panel grid lines */}
+            <line x1="20" y1="82" x2="80" y2="82" stroke="#334155" strokeWidth="0.7" />
+            <line x1="20" y1="96" x2="80" y2="96" stroke="#334155" strokeWidth="0.7" />
+            <line x1="40" y1="68" x2="40" y2="110" stroke="#334155" strokeWidth="0.7" />
+            <line x1="60" y1="68" x2="60" y2="110" stroke="#334155" strokeWidth="0.7" />
+            {/* Panel shine */}
+            <rect x="22" y="70" width="24" height="12" rx="1" fill="white" opacity="0.08" />
 
-        {/* ── Battery ──────────────────────────────────── */}
-        <div className={`transition-all duration-700 delay-200 ${phase >= 2 ? "opacity-100 scale-100" : "opacity-0 scale-50"}`}>
-          <div className="relative">
-            <BatterySVG charge={phase >= 2 ? 1 : 0} />
-            {/* Battery glow when charging */}
-            {phase >= 2 && phase < 3 && (
-              <div className="absolute inset-0 -m-2 rounded-xl bg-emerald-400/20 animate-pulse" />
+            <text x="50" y="126" textAnchor="middle" fill="#94a3b8" fontSize="9" fontWeight="500" fontFamily="system-ui">
+              Solar Panel
+            </text>
+          </g>
+
+          {/* ── ENERGY TRAVEL LINE ── */}
+          <g className={phase >= 1 ? "preloader-fade-in" : "preloader-hidden"}>
+            {/* Dashed travel line */}
+            <line
+              x1="90"
+              y1="70"
+              x2="190"
+              y2="70"
+              stroke="#334155"
+              strokeWidth="1.5"
+              strokeDasharray="6 4"
+            />
+            {/* Glowing active line */}
+            <line
+              x1="90"
+              y1="70"
+              x2="190"
+              y2="70"
+              stroke="#38bdf8"
+              strokeWidth="2"
+              className={phase >= 1 ? "preloader-line-draw" : ""}
+              style={{ filter: "drop-shadow(0 0 4px #38bdf8)" }}
+            />
+
+            {/* Energy dot traveling */}
+            {phase >= 1 && (
+              <circle r="4" fill="#38bdf8" className="preloader-dot-travel" style={{ filter: "url(#dotGlow)" }}>
+                <animateMotion
+                  dur="0.6s"
+                  fill="freeze"
+                  path="M 90 70 L 190 70"
+                  begin="0s"
+                />
+              </circle>
             )}
-          </div>
-        </div>
 
-        {/* ── Energy flow line 2 (battery → IPS) ───────── */}
-        <div className={`absolute right-[62px] top-1/2 h-0.5 bg-gradient-to-r from-transparent to-emerald-400 transition-all duration-500 sm:right-[76px] ${
-          phase >= 3 ? "w-8 sm:w-12 opacity-100" : "w-0 opacity-0"
-        }`}>
-          <div className="energy-particle-2 h-full w-2 bg-emerald-300 shadow-sm shadow-emerald-300/60" />
-        </div>
+            {/* Arrow */}
+            <polygon points="188,66 196,70 188,74" fill="#38bdf8" opacity="0.7" />
+          </g>
 
-        {/* ── IPS / Zap icon ───────────────────────────── */}
-        <div className={`transition-all duration-700 delay-200 ${phase >= 3 ? "opacity-100 scale-100" : "opacity-0 scale-50"}`}>
-          <div className="relative">
-            <div className={`flex h-14 w-14 items-center justify-center rounded-xl transition-all duration-500 ${
-              phase >= 3
-                ? "bg-white/15 shadow-lg shadow-emerald-400/30 border border-white/20"
-                : "bg-white/5 border border-white/10"
-            }`}>
-              <ZapSVG glowing={phase >= 3} />
-            </div>
-            {/* Power-on glow burst */}
+          {/* ── BATTERY ── */}
+          <g className={phase >= 2 ? "preloader-fade-in" : "preloader-hidden"}>
+            {/* Battery body */}
+            <rect x="200" y="58" width="70" height="44" rx="5" fill="#0f172a" stroke="#334155" strokeWidth="1.5" />
+            {/* Battery terminal */}
+            <rect x="270" y="72" width="6" height="16" rx="2" fill="#334155" />
+
+            {/* Fill level — animates with progress */}
+            <rect
+              x="204"
+              y={100 - ((progress / 100) * 36)}
+              width="62"
+              rx="3"
+              fill="url(#battFill)"
+              className="preloader-batt-fill"
+              style={{ height: `${(progress / 100) * 36}px`, transition: "y 0.15s ease-out, height 0.15s ease-out" }}
+            />
+
+            {/* Percentage */}
+            <text
+              x="235"
+              y="85"
+              textAnchor="middle"
+              fill="white"
+              fontSize="14"
+              fontWeight="700"
+              fontFamily="ui-monospace, monospace"
+            >
+              {progress}%
+            </text>
+
+            <text x="235" y="126" textAnchor="middle" fill="#94a3b8" fontSize="9" fontWeight="500" fontFamily="system-ui">
+              Battery
+            </text>
+          </g>
+
+          {/* ── HOME ── */}
+          <g className={phase >= 3 ? "preloader-fade-in" : "preloader-hidden"}>
+            {/* Home glow */}
             {phase >= 3 && (
-              <div className="absolute inset-0 -m-3 animate-ping rounded-2xl bg-emerald-400/15" />
+              <circle
+                cx="355"
+                cy="74"
+                r="22"
+                fill="none"
+                stroke="#fbbf24"
+                strokeWidth="1"
+                opacity="0.3"
+                className="preloader-pulse-slow"
+              />
             )}
+            {/* House body */}
+            <rect x="335" y="78" width="40" height="28" rx="2" fill={phase >= 3 ? "#1e293b" : "#0f172a"} stroke={phase >= 3 ? "#fbbf24" : "#334155"} strokeWidth="1.5" />
+            {/* Roof */}
+            <polygon
+              points="330,80 355,58 380,80"
+              fill={phase >= 3 ? "#fbbf24" : "#1e293b"}
+              stroke={phase >= 3 ? "#f59e0b" : "#334155"}
+              strokeWidth="1.5"
+              className={phase >= 3 ? "preloader-pulse-slow" : ""}
+            />
+            {/* Door */}
+            <rect x="350" y="92" width="10" height="14" rx="1" fill={phase >= 3 ? "#fbbf24" : "#1e293b"} opacity={phase >= 3 ? 0.9 : 0.3} />
+            {/* Window */}
+            <rect x="339" y="85" width="8" height="7" rx="1" fill={phase >= 3 ? "#38bdf8" : "#1e293b"} opacity={phase >= 3 ? 0.8 : 0.2} />
+            <rect x="363" y="85" width="8" height="7" rx="1" fill={phase >= 3 ? "#38bdf8" : "#1e293b"} opacity={phase >= 3 ? 0.8 : 0.2} />
+
+            {/* Lightning bolt when powered */}
+            {phase >= 3 && (
+              <g className="preloader-pulse-slow" style={{ filter: "drop-shadow(0 0 4px #fbbf24)" }}>
+                <polygon
+                  points="353,62 357,70 354,70 358,78 351,69 354,69 350,62"
+                  fill="#fbbf24"
+                />
+              </g>
+            )}
+
+            <text x="355" y="126" textAnchor="middle" fill="#94a3b8" fontSize="9" fontWeight="500" fontFamily="system-ui">
+              Home
+            </text>
+          </g>
+        </svg>
+
+        {/* ── Brand name ── */}
+        <div className="text-center mt-6">
+          <p className="text-sm font-semibold tracking-wider text-white/90">
+            Home Power Calculator
+          </p>
+          <p className="text-[11px] text-slate-500 mt-0.5 tracking-wide">
+            IPS · Battery · Solar
+          </p>
+        </div>
+
+        {/* ── Progress bar ── */}
+        <div className="mt-5 w-full max-w-[240px] mx-auto">
+          <div className="h-[3px] w-full rounded-full bg-white/5 overflow-hidden">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-amber-400 via-sky-400 to-emerald-400"
+              style={{
+                width: `${progress}%`,
+                transition: "width 0.15s ease-out",
+                boxShadow: "0 0 8px rgba(56,189,248,0.4)",
+              }}
+            />
           </div>
         </div>
-      </div>
-
-      {/* ── Brand text ─────────────────────────────────── */}
-      <div className="mt-10 text-center">
-        <h1 className={`text-xl font-bold text-white transition-all duration-500 ${
-          phase >= 2 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
-        }`}>
-          হোম পাওয়ার ক্যালকুলেটর
-        </h1>
-        <p className={`mt-1 text-sm text-slate-400 transition-all duration-500 delay-150 ${
-          phase >= 2 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
-        }`}>
-          IPS · Battery · Solar
-        </p>
-      </div>
-
-      {/* ── Phase label ────────────────────────────────── */}
-      <div className="mt-6 h-5">
-        {phase === 1 && (
-          <p className="text-xs text-amber-400/80 preloader-text-in">
-            ☀️ Capturing solar energy...
-          </p>
-        )}
-        {phase === 2 && (
-          <p className="text-xs text-emerald-400/80 preloader-text-in">
-            🔋 Charging battery...
-          </p>
-        )}
-        {phase === 3 && (
-          <p className="text-xs text-white/80 preloader-text-in">
-            ⚡ Powering your home...
-          </p>
-        )}
       </div>
     </div>
-  );
-}
-
-/* ── Inline SVGs to avoid icon-library flash ──────────────────── */
-
-function SunSVG() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-7 w-7 text-white" fill="none" stroke="currentColor" strokeWidth={2}>
-      <circle cx="12" cy="12" r="4" fill="currentColor" />
-      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function BatterySVG({ charge }: { charge: number }) {
-  return (
-    <svg viewBox="0 0 32 20" className="h-12 w-14 text-emerald-400" fill="none">
-      {/* Battery body */}
-      <rect x="1" y="3" width="26" height="14" rx="2.5" stroke="currentColor" strokeWidth="1.5" className="transition-all duration-500" />
-      {/* Battery tip */}
-      <rect x="27" y="7" width="3" height="6" rx="1" fill="currentColor" opacity="0.5" />
-      {/* Charge level bars */}
-      <rect x="3.5" y="5.5" width="5" height="9" rx="1" fill="currentColor"
-        className={`transition-all duration-700 ${charge ? "opacity-90" : "opacity-0"}`} />
-      <rect x="10" y="5.5" width="5" height="9" rx="1" fill="currentColor"
-        className={`transition-all duration-700 delay-200 ${charge ? "opacity-90" : "opacity-0"}`} />
-      <rect x="16.5" y="5.5" width="5" height="9" rx="1" fill="currentColor"
-        className={`transition-all duration-700 delay-400 ${charge ? "opacity-90" : "opacity-0"}`} />
-    </svg>
-  );
-}
-
-function ZapSVG({ glowing }: { glowing: boolean }) {
-  return (
-    <svg viewBox="0 0 24 24" className={`h-7 w-7 transition-all duration-500 ${glowing ? "text-emerald-400" : "text-white/60"}`} fill="currentColor">
-      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-    </svg>
   );
 }
