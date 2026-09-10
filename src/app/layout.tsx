@@ -3,6 +3,7 @@ import { Inter, Noto_Sans_Bengali } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { I18nProvider } from "@/lib/i18n";
+import { Preloader } from "@/components/preloader";
 import { siteUrl } from "@/lib/site";
 
 const inter = Inter({
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <I18nProvider>
+          <Preloader />
           {children}
           <Toaster position="bottom-right" toastOptions={{ style: { borderRadius: "4px" } }} richColors />
         </I18nProvider>
