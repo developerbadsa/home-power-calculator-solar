@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { X, Clock, Zap, Battery, BatteryFull } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { formatHours } from "@/lib/formatting";
 
 interface Props {
   value: number;

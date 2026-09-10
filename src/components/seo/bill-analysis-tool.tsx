@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { FileText, Calculator, BatteryCharging, Plug, Sun, Info, ChevronRight } from "lucide-react";
+import { FileText, BatteryCharging, Plug, Sun, ChevronRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { formatWatts, formatEnergy, formatNumber } from "@/lib/formatting";
+import { formatWatts, formatNumber } from "@/lib/formatting";
 import { calculate, defaultSettings } from "@/domain/calculations/recommendations";
 import { estimateCost, formatBDT } from "@/domain/calculations/cost";
 

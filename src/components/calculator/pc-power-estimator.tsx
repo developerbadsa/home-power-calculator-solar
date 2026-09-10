@@ -4,12 +4,6 @@ import { useState } from "react";
 import { Cpu, Monitor, Zap } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
-interface PcEstimate {
-  cpu: string;
-  gpu: string;
-  estimatedWatts: number;
-}
-
 // Common PC configurations in Bangladesh
 const CPU_OPTIONS = [
   { id: "basic", label: "Basic (Celeron, Pentium, i3)", labelBn: "বেসিক (সেলেরন, পেন্টিয়াম, i3)", watts: 65 },

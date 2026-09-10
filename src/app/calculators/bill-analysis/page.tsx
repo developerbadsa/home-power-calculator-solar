@@ -129,7 +129,7 @@ export default function BillAnalysisPage() {
           <div className="space-y-3">
             <div className="rounded-[4px] border border-amber-200 bg-amber-50 p-4">
               <p className="text-sm font-medium text-amber-900">
-                ❌ Using only one month's bill
+                ❌ Using only one month&apos;s bill
               </p>
               <p className="mt-1 text-sm text-amber-800">
                 A single summer month with AC running may show 400+ kWh, while
@@ -142,8 +142,8 @@ export default function BillAnalysisPage() {
                 ❌ Confusing bill amount with kWh
               </p>
               <p className="mt-1 text-sm text-amber-800">
-                The bill total in ৳ is NOT the kWh. Look for the "Unit" or
-                "kWh" number — that's what you need to enter.
+                The bill total in ৳ is NOT the kWh. Look for the &ldquo;Unit&rdquo; or
+                &ldquo;kWh&rdquo; number — that&apos;s what you need to enter.
               </p>
             </div>
             <div className="rounded-[4px] border border-amber-200 bg-amber-50 p-4">

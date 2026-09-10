@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /* ── Helpers ────────────────────────────────────────────────────────── */
 function uid() {
@@ -9,18 +9,16 @@ function uid() {
 
 /* ── Particle system ────────────────────────────────────────────────── */
 function Particles({ count = 30 }: { count?: number }) {
-  const dots = useMemo(
-    () =>
-      Array.from({ length: count }, () => ({
-        id: uid(),
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: 1 + Math.random() * 2.5,
-        dur: 8 + Math.random() * 14,
-        delay: Math.random() * -10,
-        opacity: 0.1 + Math.random() * 0.25,
-      })),
-    [count],
+  const [dots] = useState(() =>
+    Array.from({ length: count }, () => ({
+      id: uid(),
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: 1 + Math.random() * 2.5,
+      dur: 8 + Math.random() * 14,
+      delay: Math.random() * -10,
+      opacity: 0.1 + Math.random() * 0.25,
+    })),
   );
 
   return (
