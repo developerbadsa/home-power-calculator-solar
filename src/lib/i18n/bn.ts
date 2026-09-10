@@ -92,6 +92,7 @@ export const bn: Dict = {
 
   "step.backup.title": "বিদ্যুৎ চলে গেলে কত ঘণ্টা এই জিনিসগুলো চলুক?",
   "step.backup.subtitle": "ব্যাকআপ সময় বেছে নিন, বা নিজে লিখুন।",
+  "backup.hint": "বিদ্যুৎ গেলে আপনি কতক্ষণ জিনিসপত্র চালিয়ে রাখতে চান — সেটাই বেছে নিন।",
   "backup.custom": "নিজের সময় দিন",
   "backup.customPlaceholder": "ঘণ্টা",
   "backup.err": "ব্যাকআপ সময় ০.৫ থেকে ২৪ ঘণ্টার মধ্যে হতে হবে।",
@@ -102,6 +103,11 @@ export const bn: Dict = {
   // ── Result ────────────────────────────────────────────────────────────
   "result.title": "আপনার জন্য প্রস্তাবিত সিস্টেম",
   "result.subtitle": "আপনার বাড়ির জন্য একটি বাস্তবসম্মত শুরুর পয়েন্ট।",
+  "result.youNeed": "আপনার প্রায় এগুলো দরকার:",
+  "result.batteryLabel": "ব্যাটারি",
+  "result.ipsLabel": "আইপিএস",
+  "result.solarLabel": "সোলার",
+  "result.summaryLine": "{load} লোড · {hours} ব্যাকআপ · {energy} দৈনিক",
   "result.battery": "প্রস্তাবিত ব্যাটারি",
   "result.battery.alt": "বিকল্প",
   "result.inverter": "প্রস্তাবিত আইপিএস / ইনভার্টার",

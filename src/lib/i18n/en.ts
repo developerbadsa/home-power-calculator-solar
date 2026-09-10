@@ -92,6 +92,7 @@ export const en = {
 
   "step.backup.title": "How long should these run without electricity?",
   "step.backup.subtitle": "Pick a backup time, or choose custom.",
+  "backup.hint": "This is how long you want things to keep running after a power cut.",
   "backup.custom": "Custom hours",
   "backup.customPlaceholder": "Hours",
   "backup.err": "Backup time must be between 0.5 and 24 hours.",
@@ -102,6 +103,11 @@ export const en = {
   // ── Result ────────────────────────────────────────────────────────────
   "result.title": "Your recommended system",
   "result.subtitle": "A practical starting point for your home.",
+  "result.youNeed": "You need approximately:",
+  "result.batteryLabel": "Battery",
+  "result.ipsLabel": "IPS",
+  "result.solarLabel": "Solar",
+  "result.summaryLine": "{load} load · {hours} backup · {energy} daily",
   "result.battery": "Recommended battery",
   "result.battery.alt": "Alternative",
   "result.inverter": "Recommended IPS / inverter",

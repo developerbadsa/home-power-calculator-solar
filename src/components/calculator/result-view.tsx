@@ -95,15 +95,15 @@ export function ResultView({
   return (
     <div className="space-y-4">
       {/* ── One dominant recommendation card (5-second read) ────────────── */}
-      <div className="rounded-[4px] border border-slate-900 bg-slate-900 p-5 text-white">
-        <div className="grid grid-cols-3 gap-2">
-          <BigValue icon={BatteryCharging} value={battery.label} sub={battery.configuration} />
-          <BigValue icon={Plug} value={inverter.label} />
-          <BigValue icon={Sun} value={formatWatts(solar.recommendedWatts)} />
+      <div className="rounded-[4px] border border-slate-900 bg-slate-900 p-6 text-white">
+        <p className="mb-4 text-center text-sm font-medium text-slate-300">{t("result.youNeed")}</p>
+        <div className="grid grid-cols-3 gap-3">
+          <BigValue icon={BatteryCharging} value={battery.label} sub={battery.configuration} label={t("result.batteryLabel")} />
+          <BigValue icon={Plug} value={inverter.label} label={t("result.ipsLabel")} />
+          <BigValue icon={Sun} value={formatWatts(solar.recommendedWatts)} label={t("result.solarLabel")} />
         </div>
         <div className="mt-4 border-t border-slate-700 pt-3 text-center text-sm text-slate-200">
-          {formatWatts(result.totalLoadW)} · {formatHours(result.input.backupHours)}{" "}
-          · {formatEnergy(result.dailyEnergyWh)}
+          {t("result.summaryLine", { load: formatWatts(result.totalLoadW), hours: formatHours(result.input.backupHours), energy: formatEnergy(result.dailyEnergyWh) })}
         </div>
       </div>
 
@@ -142,7 +142,7 @@ export function ResultView({
         </div>
       ) : null}
 
-      {/* Why this result (§15) */}
+      {/* Why this result (§15) — friendly explanation */}
       <div className="rounded-[4px] border border-blue-200 bg-blue-50 p-4">
         <p className="text-sm leading-relaxed text-blue-800">{explanation}</p>
       </div>
@@ -251,16 +251,19 @@ function BigValue({
   icon: Icon,
   value,
   sub,
+  label,
 }: {
   icon: typeof Plug;
   value: string;
   sub?: string;
+  label?: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-1 text-center">
-      <span className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-slate-700/70 text-slate-100">
-        <Icon className="h-5 w-5" strokeWidth={1.75} />
+    <div className="flex flex-col items-center gap-1.5 text-center">
+      <span className="flex h-11 w-11 items-center justify-center rounded-[4px] bg-slate-700/70 text-slate-100">
+        <Icon className="h-6 w-6" strokeWidth={1.75} />
       </span>
+      {label ? <span className="text-xs font-medium text-slate-400">{label}</span> : null}
       <span className="text-xl font-bold leading-tight">{value}</span>
       {sub ? <span className="text-xs text-slate-300">{sub}</span> : null}
     </div>

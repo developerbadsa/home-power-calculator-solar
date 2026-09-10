@@ -151,17 +151,14 @@ export function AppliancePicker({ onAdd }: Props) {
                 <button
                   type="button"
                   onClick={() => addAppliance(a.id)}
-                  className="flex w-full items-center gap-3 rounded-[4px] border border-slate-200 bg-white p-3 text-left transition-colors hover:border-slate-900 hover:bg-slate-50"
+                  className="flex w-full items-center gap-3 rounded-[4px] border border-slate-200 bg-white p-4 text-left transition-colors hover:border-slate-900 hover:bg-slate-50 active:scale-[0.98]"
                 >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[4px] bg-slate-100 text-slate-700">
-                    <Icon className="h-5 w-5" strokeWidth={1.75} />
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[4px] bg-slate-100 text-slate-700">
+                    <Icon className="h-6 w-6" strokeWidth={1.75} />
                   </span>
                   <span>
-                    <span className="block text-sm font-medium leading-snug text-slate-900">
+                    <span className="block text-base font-medium leading-snug text-slate-900">
                       {lang === "bn" ? a.nameBn : a.name}
-                    </span>
-                    <span className="block text-xs text-slate-500">
-                      {formatWatts(a.typicalWatts)}
                     </span>
                   </span>
                 </button>

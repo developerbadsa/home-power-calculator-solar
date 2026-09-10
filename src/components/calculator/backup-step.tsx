@@ -31,6 +31,7 @@ export function BackupStep({ value, onChange }: Props) {
 
   return (
     <div className="space-y-3">
+      <p className="text-sm text-slate-500">{t("backup.hint")}</p>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {PRESETS.map((h) => (
           <button
@@ -38,8 +39,8 @@ export function BackupStep({ value, onChange }: Props) {
             type="button"
             onClick={() => onChange(h)}
             aria-pressed={value === h && !customOpen}
-            className={`chip h-14 justify-center text-lg font-semibold ${
-              value === h && !customOpen ? "chip-active" : "chip-idle"
+            className={`flex h-16 items-center justify-center rounded-[4px] text-lg font-semibold transition-colors active:scale-[0.98] ${
+              value === h && !customOpen ? "bg-slate-900 text-white" : "border border-slate-200 bg-white text-slate-900 hover:border-slate-900"
             }`}
           >
             {formatHours(h)}
